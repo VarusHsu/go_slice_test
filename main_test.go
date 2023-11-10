@@ -1,9 +1,10 @@
-package go_slice
+package main
 
 import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 )
 
 func printSlice(name string, s []int) {
@@ -177,4 +178,55 @@ func Test_slice12(t *testing.T) {
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
+}
+
+// Test_slice13
+// * slice 的长度的上限
+// make 1 len slice cost 0 us
+// make 2 len slice cost 0 us
+// make 4 len slice cost 0 us
+// make 8 len slice cost 1 us
+// make 16 len slice cost 4 us
+// make 32 len slice cost 0 us
+// make 64 len slice cost 0 us
+// make 128 len slice cost 0 us
+// make 256 len slice cost 1 us
+// make 512 len slice cost 1 us
+// make 1024 len slice cost 0 us
+// make 2048 len slice cost 0 us
+// make 4096 len slice cost 1 us
+// make 8192 len slice cost 3 us
+// make 16384 len slice cost 1 us
+// make 32768 len slice cost 2 us
+// make 65536 len slice cost 4 us
+// make 131072 len slice cost 6 us
+// make 262144 len slice cost 337 us
+// make 524288 len slice cost 127 us
+// make 1048576 len slice cost 858 us
+// make 2097152 len slice cost 903 us
+// make 4194304 len slice cost 2249 us
+// make 8388608 len slice cost 4148 us
+// make 16777216 len slice cost 7057 us
+// make 33554432 len slice cost 14250 us
+// make 67108864 len slice cost 28218 us
+// make 134217728 len slice cost 58944 us
+// make 268435456 len slice cost 186106 us
+// make 536870912 len slice cost 595593 us
+// make 1073741824 len slice cost 1933853 us
+// make 2147483648 len slice cost 101160 us
+// make 4294967296 len slice cost 6442552 us
+// make 8589934592 len slice cost 15700334 us
+// process kill by signal 9 SIGKILL
+func Test_slice13(t *testing.T) {
+	makeSlices := func(l int) {
+		now := time.Now().UnixMicro()
+		_ = make([]int, l)
+		now2 := time.Now().UnixMicro()
+		fmt.Printf("make %d len slice cost %d us\n", l, now2-now)
+	}
+	i := 1
+	for j := 0; j < 34; j++ {
+		makeSlices(i)
+		i <<= 1
+	}
 }
